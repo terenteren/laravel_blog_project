@@ -11,7 +11,9 @@ use Illuminate\Http\Request;
 class PostController extends Controller
 {
     public function index() {
-        $posts = Post::orderby('created_at', 'desc')->with('comments')->get();
+        $posts = Post::orderby('created_at', 'desc')
+            ->with([ 'categories', 'comments' ])
+            ->get();
         return response()->json( $posts );
     }
 
@@ -19,6 +21,9 @@ class PostController extends Controller
         $params = $request->only( [ 'subject', 'content' ] );
         
         $post = Post::create($params);
+        $ids = $request->input( 'category_ids' );
+        // attach, detach, sync
+        $post->categories()->sync($ids);
 
         return response()->json($post);
     }
@@ -43,12 +48,14 @@ class PostController extends Controller
                 ->json([ 'message' => '조회할 데이터가 없습니다.' ], 404);
         }
 
-        $subject = $request->input( 'subject', null );
-        $content = $request->input( 'content', null );
+        $subject = $request->input( 'subject' );
+        $content = $request->input( 'content' );
+        $ids = $request->input( 'category_ids' );
 
         if( $subject ) $post->subject = $subject;
         if( $content ) $post->content = $content;
         $post->save();
+        $post->categories()->sync($ids);
 
         return response()->json( $post );
     }
