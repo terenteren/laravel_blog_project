@@ -16,22 +16,27 @@ class CommentController extends Controller
             return abort( 404 );
         }
         
-        $author = $request->input('author');
+        $user = $request->user();
         $content = $request->input('content');
 
         $comment = new Comment();
+        $comment->user_id = $user->id;
         $comment->post_id = $post->id;
-        $comment->author = $author;
         $comment->content = $content;
         $comment->save();
 
         return response()->json( $comment );
     }
 
-    public function delete( $postId, $id ) {
+    public function delete( Request $request, $postId, $id ) {
         $comment = Comment::where( 'post_id', $postId )->where( 'id', $id )->first();
 
         if( !$comment ) abort( 404 );
+
+        $user = $request->user();
+        if( $user->id !== $comment->user_id ) {
+            return abort( 403 );
+        }
 
         $comment->delete();
 

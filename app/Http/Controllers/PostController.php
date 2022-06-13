@@ -12,7 +12,7 @@ class PostController extends Controller
 {
     public function index() {
         $posts = Post::orderby('created_at', 'desc')
-            ->with([ 'categories', 'comments', 'user' ])
+            ->with([ 'categories', 'comments', 'comments.user', 'user' ])
             ->paginate(10);
         return response()->json( $posts );
     }
@@ -33,7 +33,9 @@ class PostController extends Controller
 
     public function read( $id ) {
         // $post = Post::find($id);
-        $post = Post::where('id', $id)->with('comments')->first();
+        $post = Post::where('id', $id)
+            ->with(['comments', 'comments.user', 'user'])
+            ->first();
 
         if(!$post) {
             return response()

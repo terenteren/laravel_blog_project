@@ -27,8 +27,7 @@ Route::middleware('auth:sanctum')->get('/users', function (Request $request) {
 Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{id}', [PostController::class, 'read']);
 
-Route::post('/posts/{postId}/comments', [CommentController::class, 'create']);
-Route::delete('/posts/{postId}/comments/{id}', [CommentController::class, 'delete']);
+
 
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::post('/categories', [CategoryController::class, 'create']);
@@ -42,4 +41,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/posts', [PostController::class, 'create']);
     Route::patch('/posts/{id}', [PostController::class, 'update']);
     Route::delete('/posts/{id}', [PostController::class, 'delete']);
+    Route::post('/posts/{postId}/comments', [CommentController::class, 'create']);
+    Route::delete('/posts/{postId}/comments/{id}', [CommentController::class, 'delete']);
 });
