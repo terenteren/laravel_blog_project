@@ -14,5 +14,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    logger('Route : /');
+    logger('Dice result');
+    logger( dice() );
+    logger( dice() );
+    logger( dice() );
     return view('welcome');
 });
